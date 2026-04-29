@@ -54,7 +54,7 @@ if num_results <= 0:
 # SERVING ENDPOINT HELPERS
 # =========================
 
-workspace_client = WorkspaceClient()
+workspace_client = WorkspaceClient(disable_notice=True)
 
 
 def as_dict(response):
@@ -138,13 +138,15 @@ query_embedding = extract_embedding(embedding_response)
 # RETRIEVE CONTEXT
 # =========================
 
-vector_client = VectorSearchClient()
+vector_client = VectorSearchClient(disable_notice=True)
 index = vector_client.get_index(endpoint_name=vector_endpoint, index_name=index_name)
 
-results = index.similarity_search(
-    query_vector=query_embedding,
-    columns=["chunk", "source_file", "category", "chunk_key"],
-    num_results=num_results,
+results = as_dict(
+    index.similarity_search(
+        query_vector=query_embedding,
+        columns=["chunk", "source_file", "category", "chunk_key"],
+        num_results=num_results,
+    )
 )
 
 rows = results.get("result", {}).get("data_array", [])

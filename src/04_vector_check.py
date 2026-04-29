@@ -29,7 +29,7 @@ if sleep_seconds <= 0:
 # CONNECT TO VECTOR SEARCH
 # =========================
 
-client = VectorSearchClient()
+client = VectorSearchClient(disable_notice=True)
 
 index = client.get_index(
     endpoint_name=vector_endpoint,
@@ -46,6 +46,8 @@ last_status = None
 
 for attempt in range(1, max_attempts + 1):
     description = index.describe()
+    if hasattr(description, "as_dict"):
+        description = description.as_dict()
     status = description.get("status", {})
     last_status = status
 
@@ -73,6 +75,8 @@ else:
 # =========================
 
 description = index.describe()
+if hasattr(description, "as_dict"):
+    description = description.as_dict()
 
 print("Vector index check completed")
 print(f"Endpoint: {vector_endpoint}")

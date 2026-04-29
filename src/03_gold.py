@@ -23,7 +23,7 @@ dbutils.widgets.text("gold_schema", "beinyk_gold")
 dbutils.widgets.text("silver_table_name", "policy_chunks")
 dbutils.widgets.text("gold_table_name", "policy_embeddings")
 dbutils.widgets.text("embedding_endpoint", "databricks-gte-large-en")
-dbutils.widgets.text("embedding_batch_size", "16")
+dbutils.widgets.text("embedding_batch_size", "1")
 
 catalog = dbutils.widgets.get("catalog")
 silver_schema = dbutils.widgets.get("silver_schema")
@@ -77,6 +77,28 @@ def embed_batch(texts):
         input=texts,
     )
     return extract_embeddings(response)
+
+
+def is_timeout_error(error):
+    message = str(error).lower()
+    return "timed out" in message or "timeout" in message
+
+
+def embed_batch_adaptive(texts):
+    try:
+        return embed_batch(texts)
+    except Exception as error:
+        if len(texts) <= 1 or not is_timeout_error(error):
+            raise
+
+        midpoint = len(texts) // 2
+        print(
+            f"Embedding batch timed out with {len(texts)} chunks. "
+            f"Retrying as {midpoint} and {len(texts) - midpoint} chunks."
+        )
+        left_embeddings = embed_batch_adaptive(texts[:midpoint])
+        right_embeddings = embed_batch_adaptive(texts[midpoint:])
+        return left_embeddings + right_embeddings
 
 
 def iter_batches(rows, batch_size):
@@ -190,13 +212,17 @@ if chunks_to_embed_count == 0:
     print("No new or changed chunks found. Gold table is already up to date.")
 else:
     print(f"Generating embeddings for {chunks_to_embed_count} chunks")
+    print(f"Embedding batch size: {embedding_batch_size}")
 
     embedded_rows = []
     source_rows = chunks_to_embed_df.select(*selected_columns).toLocalIterator()
+    total_batches = (chunks_to_embed_count + embedding_batch_size - 1) // embedding_batch_size
+    processed_chunks = 0
 
-    for batch in iter_batches(source_rows, embedding_batch_size):
+    for batch_number, batch in enumerate(iter_batches(source_rows, embedding_batch_size), start=1):
+        print(f"Embedding batch {batch_number}/{total_batches} with {len(batch)} chunks")
         texts = [row["chunk"] if row["chunk"] is not None else "" for row in batch]
-        embeddings = embed_batch(texts)
+        embeddings = embed_batch_adaptive(texts)
 
         if len(embeddings) != len(batch):
             raise ValueError(
@@ -218,6 +244,9 @@ else:
                     embedding,
                 )
             )
+
+        processed_chunks += len(batch)
+        print(f"Embedded {processed_chunks}/{chunks_to_embed_count} chunks")
 
     embedded_schema = StructType(
         [

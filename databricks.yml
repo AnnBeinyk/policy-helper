@@ -49,7 +49,7 @@ variables:
     default: databricks-gpt-oss-20b
   embedding_batch_size:
     description: Driver-side serving endpoint batch size for embeddings.
-    default: "16"
+    default: "1"
   existing_cluster_id:
     description: Existing Databricks cluster used by the job tasks.
     default: 0212-171341-9svpyvg2

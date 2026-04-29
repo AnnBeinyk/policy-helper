@@ -112,16 +112,10 @@ def extract_answer(response):
 def query_llm(prompt):
     messages = [{"role": "user", "content": prompt}]
 
-    try:
-        return workspace_client.serving_endpoints.query(
-            name=llm_endpoint,
-            messages=messages,
-        )
-    except TypeError:
-        return workspace_client.serving_endpoints.query(
-            name=llm_endpoint,
-            inputs={"messages": messages},
-        )
+    return workspace_client.serving_endpoints.query(
+        name=llm_endpoint,
+        inputs={"messages": messages},
+    )
 
 
 # =========================

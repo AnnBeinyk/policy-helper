@@ -1,0 +1,76 @@
+bundle:
+  name: policy-intelligence-assistant
+
+include:
+  - resources/*.yml
+
+variables:
+  catalog:
+    description: Unity Catalog catalog for policy RAG tables.
+    default: dbr_dev
+  bronze_schema:
+    description: Bronze schema.
+    default: beinyk_bronze
+  silver_schema:
+    description: Silver schema.
+    default: beinyk_silver
+  gold_schema:
+    description: Gold schema.
+    default: beinyk_gold
+  bronze_table_name:
+    description: Bronze Delta table name.
+    default: policies_bronze
+  silver_table_name:
+    description: Silver Delta table name.
+    default: policy_chunks
+  gold_table_name:
+    description: Gold Delta table name.
+    default: policy_embeddings
+  storage_account:
+    description: ADLS Gen2 storage account.
+    default: sadlsdev
+  container:
+    description: ADLS Gen2 container.
+    default: beinykcontainer
+  environment:
+    description: Environment label written into Bronze metadata.
+    default: dev
+  vector_endpoint:
+    description: Databricks Vector Search endpoint.
+    default: beinyk-vector-endpoint
+  index_name:
+    description: Fully qualified Vector Search index name.
+    default: dbr_dev.beinyk_gold.policy_embeddings_index
+  embedding_endpoint:
+    description: Model serving endpoint for embeddings.
+    default: databricks-gte-large-en
+  llm_endpoint:
+    description: Model serving endpoint for RAG generation.
+    default: databricks-gpt-oss-20b
+  embedding_batch_size:
+    description: Driver-side serving endpoint batch size for embeddings.
+    default: "16"
+  existing_cluster_id:
+    description: Existing Databricks cluster used by the job tasks.
+    default: 0212-171341-9svpyvg2
+
+
+targets:
+  dev:
+    mode: development
+    default: true
+    variables:
+      catalog: dbr_dev
+      environment: dev
+      index_name: dbr_dev.beinyk_gold.policy_embeddings_index
+    workspace:
+      root_path: /Workspace/Users/${workspace.current_user.userName}/.bundle/${bundle.name}/${bundle.target}
+
+  prod:
+    mode: production
+    variables:
+      catalog: beinyk_test
+      environment: prod
+      index_name: beinyk_test.beinyk_gold.policy_embeddings_index
+    workspace:
+      root_path: /Workspace/Users/${workspace.current_user.userName}/.bundle/${bundle.name}/${bundle.target}

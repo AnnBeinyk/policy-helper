@@ -1,0 +1,81 @@
+resources:
+  jobs:
+    policy_intelligence_assistant_refresh:
+      name: policy-intelligence-assistant-refresh-${bundle.target}
+      description: Refresh Bronze, Silver, Gold, and validate the Vector Search index.
+      max_concurrent_runs: 1
+      tasks:
+        - task_key: bronze
+          existing_cluster_id: ${var.existing_cluster_id}
+          notebook_task:
+            notebook_path: ../src/01_bronze.py
+            source: WORKSPACE
+            base_parameters:
+              storage_account: ${var.storage_account}
+              container: ${var.container}
+              catalog: ${var.catalog}
+              schema: ${var.bronze_schema}
+              table_name: ${var.bronze_table_name}
+              environment: ${var.environment}
+
+        - task_key: silver
+          depends_on:
+            - task_key: bronze
+          existing_cluster_id: ${var.existing_cluster_id}
+          notebook_task:
+            notebook_path: ../src/02_silver.py
+            source: WORKSPACE
+            base_parameters:
+              catalog: ${var.catalog}
+              bronze_schema: ${var.bronze_schema}
+              silver_schema: ${var.silver_schema}
+              bronze_table_name: ${var.bronze_table_name}
+              silver_table_name: ${var.silver_table_name}
+
+        - task_key: gold
+          depends_on:
+            - task_key: silver
+          existing_cluster_id: ${var.existing_cluster_id}
+          notebook_task:
+            notebook_path: ../src/03_gold.py
+            source: WORKSPACE
+            base_parameters:
+              catalog: ${var.catalog}
+              silver_schema: ${var.silver_schema}
+              gold_schema: ${var.gold_schema}
+              silver_table_name: ${var.silver_table_name}
+              gold_table_name: ${var.gold_table_name}
+              embedding_endpoint: ${var.embedding_endpoint}
+              embedding_batch_size: ${var.embedding_batch_size}
+
+        - task_key: vector_check
+          depends_on:
+            - task_key: gold
+          existing_cluster_id: ${var.existing_cluster_id}
+          notebook_task:
+            notebook_path: ../src/04_vector_check.py
+            source: WORKSPACE
+            base_parameters:
+              vector_endpoint: ${var.vector_endpoint}
+              index_name: ${var.index_name}
+              max_attempts: "20"
+              sleep_seconds: "10"
+
+    policy_intelligence_assistant_ask:
+      name: policy-intelligence-assistant-ask-${bundle.target}
+      description: Ask questions against the prepared policy Vector Search index.
+      max_concurrent_runs: 5
+      tasks:
+        - task_key: ask_policy
+          existing_cluster_id: ${var.existing_cluster_id}
+          notebook_task:
+            notebook_path: ../src/06_ask_policy.py
+            source: WORKSPACE
+            base_parameters:
+              demo_question: custom
+              question: ""
+              embed_endpoint: ${var.embedding_endpoint}
+              llm_endpoint: ${var.llm_endpoint}
+              vector_endpoint: ${var.vector_endpoint}
+              index_name: ${var.index_name}
+              num_results: "3"

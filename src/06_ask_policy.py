@@ -3,6 +3,7 @@
 # 06_ask_policy.py
 
 from databricks.sdk import WorkspaceClient
+from databricks.sdk.service.serving import ChatMessage, ChatMessageRole
 from databricks.vector_search.client import VectorSearchClient
 
 # =========================
@@ -110,11 +111,14 @@ def extract_answer(response):
 
 
 def query_llm(prompt):
-    messages = [{"role": "user", "content": prompt}]
-
     return workspace_client.serving_endpoints.query(
         name=llm_endpoint,
-        inputs={"messages": messages},
+        messages=[
+            ChatMessage(
+                role=ChatMessageRole.USER,
+                content=prompt,
+            )
+        ],
     )
 
 

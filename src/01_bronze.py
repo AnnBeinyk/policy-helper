@@ -7,7 +7,6 @@ from pyspark.sql.functions import (
     concat_ws,
     current_date,
     current_timestamp,
-    input_file_name,
     lit,
     sha2,
 )
@@ -76,7 +75,7 @@ if missing_columns:
 # =========================
 
 bronze_df = (
-    incoming_df.withColumn("source_path", input_file_name())
+    incoming_df.withColumn("source_path", col("_metadata.file_path"))
     .withColumn("ingested_at", current_timestamp())
     .withColumn("ingestion_date", current_date())
     .withColumn("environment", lit(environment))

@@ -1,4 +1,6 @@
-# Databricks notebook / 05_rag_test.py
+# Databricks notebook source
+
+# 05_rag_test.py
 
 dbutils.widgets.dropdown(
     "demo_question",

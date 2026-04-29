@@ -1,4 +1,6 @@
-# Databricks notebook / 03_gold.py
+# Databricks notebook source
+
+# 03_gold.py
 
 from databricks.sdk import WorkspaceClient
 from pyspark.sql.functions import col, current_timestamp, lit

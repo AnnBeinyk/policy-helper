@@ -1,4 +1,6 @@
-# Databricks notebook / 01_bronze.py
+# Databricks notebook source
+
+# 01_bronze.py
 
 from pyspark.sql.functions import (
     col,

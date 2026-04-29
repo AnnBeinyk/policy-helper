@@ -1,4 +1,6 @@
-# Databricks notebook / 06_ask_policy.py
+# Databricks notebook source
+
+# 06_ask_policy.py
 
 from databricks.sdk import WorkspaceClient
 from databricks.vector_search.client import VectorSearchClient

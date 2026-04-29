@@ -1,4 +1,6 @@
-# Databricks notebook / 02_silver.py
+# Databricks notebook source
+
+# 02_silver.py
 
 from pyspark.sql import Window
 from pyspark.sql.functions import (

@@ -1,4 +1,6 @@
-# Databricks notebook / 04_vector_check.py
+# Databricks notebook source
+
+# 04_vector_check.py
 
 from databricks.vector_search.client import VectorSearchClient
 import time

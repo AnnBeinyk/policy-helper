@@ -45,6 +45,8 @@ Bronze -> Silver -> Gold
 
 Use `policy_intelligence_assistant_ask` or run `src/06_ask_policy.py` directly when you only want to ask questions. This does not rebuild Bronze, Silver, or Gold.
 
+The ask job installs `databricks-vectorsearch` as a task library. If you run `src/06_ask_policy.py` manually from a notebook instead of the deployed job, install `databricks-vectorsearch` on that cluster first.
+
 ## Tables And Endpoints
 
 Default development configuration:

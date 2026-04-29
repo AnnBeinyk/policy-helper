@@ -4,7 +4,7 @@
 
 dbutils.widgets.dropdown(
     "demo_question",
-    "custom",
+    "vacation policy",
     [
         "custom",
         "vacation policy",
@@ -20,19 +20,27 @@ dbutils.widgets.text("vector_endpoint", "beinyk-vector-endpoint")
 dbutils.widgets.text("index_name", "dbr_dev.beinyk_gold.policy_embeddings_index")
 dbutils.widgets.text("num_results", "3")
 
-result = dbutils.notebook.run(
-    "./06_ask_policy",
-    0,
-    {
-        "demo_question": dbutils.widgets.get("demo_question"),
-        "question": dbutils.widgets.get("question"),
-        "embed_endpoint": dbutils.widgets.get("embed_endpoint"),
-        "llm_endpoint": dbutils.widgets.get("llm_endpoint"),
-        "vector_endpoint": dbutils.widgets.get("vector_endpoint"),
-        "index_name": dbutils.widgets.get("index_name"),
-        "num_results": dbutils.widgets.get("num_results"),
-    },
-)
+custom_question = dbutils.widgets.get("question").strip()
+demo_question = dbutils.widgets.get("demo_question")
 
-print(result)
+if not custom_question and demo_question == "custom":
+    dbutils.widgets.remove("demo_question")
+    dbutils.widgets.dropdown(
+        "demo_question",
+        "vacation policy",
+        [
+            "custom",
+            "vacation policy",
+            "remote work policy",
+            "expense reimbursement",
+            "data access policy",
+        ],
+    )
+
+# COMMAND ----------
+
+# MAGIC %run ./06_ask_policy
+
+# COMMAND ----------
+
 print("RAG smoke test passed")

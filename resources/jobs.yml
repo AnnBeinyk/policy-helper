@@ -55,11 +55,14 @@ resources:
       tasks:
         - task_key: ask_policy
           existing_cluster_id: ${var.existing_cluster_id}
+          libraries:
+            - pypi:
+                package: databricks-vectorsearch
           notebook_task:
             notebook_path: ../src/06_ask_policy.py
             source: WORKSPACE
             base_parameters:
-              demo_question: custom
+              demo_question: vacation policy
               question: ""
               embed_endpoint: ${var.embedding_endpoint}
               llm_endpoint: ${var.llm_endpoint}

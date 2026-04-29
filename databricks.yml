@@ -64,7 +64,7 @@ targets:
       environment: dev
       index_name: dbr_dev.beinyk_gold.policy_embeddings_index
     workspace:
-      root_path: /Workspace/Users/${workspace.current_user.userName}/.bundle/${bundle.name}/${bundle.target}
+      root_path: /Workspace/Users/${workspace.current_user.userName}/${bundle.name}/${bundle.target}/.bundle
 
   prod:
     mode: production
@@ -73,4 +73,4 @@ targets:
       environment: prod
       index_name: beinyk_test.beinyk_gold.policy_embeddings_index
     workspace:
-      root_path: /Workspace/Users/${workspace.current_user.userName}/.bundle/${bundle.name}/${bundle.target}
+      root_path: /Workspace/Users/${workspace.current_user.userName}/${bundle.name}/${bundle.target}/.bundle

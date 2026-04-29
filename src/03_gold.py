@@ -74,7 +74,7 @@ def extract_embeddings(response):
 def embed_batch(texts):
     response = workspace_client.serving_endpoints.query(
         name=embedding_endpoint,
-        inputs={"input": texts},
+        input=texts,
     )
     return extract_embeddings(response)
 

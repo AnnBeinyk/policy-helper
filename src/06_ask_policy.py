@@ -130,7 +130,7 @@ def query_llm(prompt):
 
 embedding_response = workspace_client.serving_endpoints.query(
     name=embed_endpoint,
-    inputs={"input": [question]},
+    input=[question],
 )
 query_embedding = extract_embedding(embedding_response)
 

@@ -2,7 +2,7 @@ resources:
   jobs:
     policy_intelligence_assistant_refresh:
       name: policy-intelligence-assistant-refresh-${bundle.target}
-      description: Refresh Bronze, Silver, Gold, and validate the Vector Search index.
+      description: Refresh Bronze, Silver, and Gold policy tables.
       max_concurrent_runs: 1
       tasks:
         - task_key: bronze
@@ -47,19 +47,6 @@ resources:
               gold_table_name: ${var.gold_table_name}
               embedding_endpoint: ${var.embedding_endpoint}
               embedding_batch_size: ${var.embedding_batch_size}
-
-        - task_key: vector_check
-          depends_on:
-            - task_key: gold
-          existing_cluster_id: ${var.existing_cluster_id}
-          notebook_task:
-            notebook_path: ../src/04_vector_check.py
-            source: WORKSPACE
-            base_parameters:
-              vector_endpoint: ${var.vector_endpoint}
-              index_name: ${var.index_name}
-              max_attempts: "20"
-              sleep_seconds: "10"
 
     policy_intelligence_assistant_ask:
       name: policy-intelligence-assistant-ask-${bundle.target}

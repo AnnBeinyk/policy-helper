@@ -40,7 +40,7 @@ This separation is intentional. Policy documents usually change rarely, while us
 Use `policy_intelligence_assistant_refresh` when policy files are new or changed:
 
 ```text
-Bronze -> Silver -> Gold -> Vector check
+Bronze -> Silver -> Gold
 ```
 
 Use `policy_intelligence_assistant_ask` or run `src/06_ask_policy.py` directly when you only want to ask questions. This does not rebuild Bronze, Silver, or Gold.
@@ -82,6 +82,8 @@ Run a data refresh:
 ```bash
 databricks bundle run policy_intelligence_assistant_refresh -t dev
 ```
+
+Create and sync the Vector Search index separately after Gold exists. The refresh job does not create or validate the index.
 
 Ask a question from Databricks Jobs UI by opening the deployed `policy-intelligence-assistant-ask-dev` job and overriding the `question` parameter.
 

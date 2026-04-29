@@ -11,7 +11,7 @@ from databricks.vector_search.client import VectorSearchClient
 
 dbutils.widgets.dropdown(
     "demo_question",
-    "custom",
+    "vacation policy",
     [
         "custom",
         "vacation policy",
@@ -45,7 +45,7 @@ demo_questions = {
 question = custom_question or demo_questions.get(demo_question)
 
 if not question:
-    raise ValueError("Provide a question or select a demo_question")
+    question = demo_questions["vacation policy"]
 
 if num_results <= 0:
     raise ValueError("num_results must be greater than 0")

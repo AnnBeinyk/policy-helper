@@ -29,7 +29,7 @@ if sleep_seconds <= 0:
 # CONNECT TO VECTOR SEARCH
 # =========================
 
-client = VectorSearchClient(disable_notice=True)
+client = VectorSearchClient()
 
 index = client.get_index(
     endpoint_name=vector_endpoint,

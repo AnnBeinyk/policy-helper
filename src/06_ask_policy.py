@@ -54,7 +54,7 @@ if num_results <= 0:
 # SERVING ENDPOINT HELPERS
 # =========================
 
-workspace_client = WorkspaceClient(disable_notice=True)
+workspace_client = WorkspaceClient()
 
 
 def as_dict(response):
@@ -138,7 +138,7 @@ query_embedding = extract_embedding(embedding_response)
 # RETRIEVE CONTEXT
 # =========================
 
-vector_client = VectorSearchClient(disable_notice=True)
+vector_client = VectorSearchClient()
 index = vector_client.get_index(endpoint_name=vector_endpoint, index_name=index_name)
 
 results = as_dict(
